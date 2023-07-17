@@ -11,7 +11,7 @@ export const getUserById = (req: Request, res: Response) => User.findById(req.pa
 
 export const createUser = (req: Request, res: Response) => {
   const { name, about, avatar } = req.body;
-  return User.create({ name, about, avatar })
+  User.create({ name, about, avatar })
     .then((user) => res.send({
       name, about, avatar, _id: user._id,
     }))

@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema<IUser>({
   avatar: {
     type: String,
     required: true,
-    match: /^http?:\/\/.+/,
+    match: /^https?:\/\/.+/,
   },
 });
 
