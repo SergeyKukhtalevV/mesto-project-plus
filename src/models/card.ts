@@ -1,4 +1,4 @@
-import mongoose, { Schema, Types } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 interface ICard {
   name: string;
@@ -28,7 +28,7 @@ const cardSchema = new Schema<ICard>(
       required: true,
     },
     likes: {
-      type: [Types.ObjectId],
+      type: [Schema.Types.ObjectId],
       default: [],
       ref: "user",
     },
