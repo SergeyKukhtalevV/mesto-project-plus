@@ -19,10 +19,11 @@ export const createCard = (req: ExpandedRequest, res: Response) => {
     likes,
     createdAt,
   } = req.body;
+  const userId = req.user?._id;
   Card.create({
     name,
     link,
-    owner: req.user?._id,
+    owner: userId,
     likes,
     createdAt,
   })
@@ -41,3 +42,48 @@ export const deleteCard = (req: Request, res: Response) => Card.findByIdAndRemov
   })
   .catch(() => res.status(500)
     .send({ message: "Произошла ошибка при удалении карточки" }));
+
+export const putLikeCard = (req: ExpandedRequest, res: Response) => {
+  const userId = req.user?._id;
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: userId } },
+    { new: true },
+  )
+    .then((result) => {
+      if (!result) {
+        throw new Error("Ошибка при установке лайка карточке");
+      }
+      res.send({
+        message: "Добавлен лайк карточке",
+      });
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .send({ message: err.message });
+    });
+};
+
+export const removedLikeCard = (req: ExpandedRequest, res: Response) => {
+  const userId = req.user?._id;
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    // @ts-ignore
+    { $pull: { likes: userId } },
+    { new: true },
+  )
+    .then((result) => {
+      if (!result) {
+        throw new Error("Ошибка при удалении лайка карточке");
+      }
+      res.send({
+        message: "Удален лайк карточки",
+      });
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .send({ message: err.message });
+    });
+};
