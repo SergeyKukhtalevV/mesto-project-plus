@@ -6,24 +6,27 @@ interface IUser {
   avatar: string;
 }
 
-const userSchema = new mongoose.Schema<IUser>({
-  name: {
-    type: String,
-    minlength: 2,
-    maxlength: 30,
-    required: true,
+const userSchema = new mongoose.Schema<IUser>(
+  {
+    name: {
+      type: String,
+      minlength: 2,
+      maxlength: 30,
+      required: true,
+    },
+    about: {
+      type: String,
+      minlength: 2,
+      maxlength: 200,
+      required: true,
+    },
+    avatar: {
+      type: String,
+      required: true,
+      match: /^https?:\/\/.+/,
+    },
   },
-  about: {
-    type: String,
-    minlength: 2,
-    maxlength: 200,
-    required: true,
-  },
-  avatar: {
-    type: String,
-    required: true,
-    match: /^https?:\/\/.+/,
-  },
-});
+  { versionKey: false },
+);
 
 export default mongoose.model<IUser>("user", userSchema);

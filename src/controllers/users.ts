@@ -23,12 +23,7 @@ export const createUser = (req: Request, res: Response) => {
     about,
     avatar,
   })
-    .then((user) => res.send({
-      name,
-      about,
-      avatar,
-      _id: user._id,
-    }))
+    .then((user) => res.send(user))
     .catch((err) => res.status(500)
       .send({ message: `Произошла ошибка при создании пользователя. ${err}` }));
 };

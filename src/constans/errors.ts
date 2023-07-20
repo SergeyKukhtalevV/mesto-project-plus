@@ -1,0 +1,12 @@
+export const INCORRECT_REQUEST = {
+  status: 400,
+  message: "Ошибка. Переданы некорректные данные в запросе к серверу",
+};
+export const NOT_FOUND_ERROR = {
+  status: 404,
+  message: "Ошибка. Запрашиваемый ресурс не найден в базе данных",
+};
+export const SERVER_ERROR = {
+  status: 500,
+  message: "Ошибка сервера",
+};
