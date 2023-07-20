@@ -1,18 +1,24 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import User from "../models/user";
 import { ExpandedRequest } from "./cards";
+import { CustomError } from "../errors/CustomError";
 
-export const getUsers = (req: Request, res: Response) => User.find({})
+export const getUsers = (req: Request, res: Response, next: NextFunction) => User.find({})
   .then((users) => res.send(users))
-  .catch(() => res.status(500)
-    .send({ message: "Произошла ошибка получения информации о пользователях" }));
+  .catch(next);
 
-export const getUserById = (req: Request, res: Response) => User.findById(req.params.userId)
-  .then((users) => res.send(users))
-  .catch(() => res.status(500)
-    .send({ message: "Произошла ошибка. ID пользователя не найден" }));
-
-export const createUser = (req: Request, res: Response) => {
+export const getUserById = (req: Request, res: Response, next: NextFunction) => {
+  User.findById(req.params.userId)
+    .then((users) => res.send(users))
+    .catch((err) => {
+      if (err.name === "CastError") {
+        next(CustomError.notFoundError());
+      } else {
+        next(err);
+      }
+    });
+};
+export const createUser = (req: Request, res: Response, next: NextFunction) => {
   const {
     name,
     about,
@@ -24,11 +30,16 @@ export const createUser = (req: Request, res: Response) => {
     avatar,
   })
     .then((user) => res.send(user))
-    .catch((err) => res.status(500)
-      .send({ message: `Произошла ошибка при создании пользователя. ${err}` }));
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        next(CustomError.incorrectRequest());
+      } else {
+        next(err);
+      }
+    });
 };
 
-export const patchAboutUser = (req: ExpandedRequest, res: Response) => {
+export const patchAboutUser = (req: ExpandedRequest, res: Response, next: NextFunction) => {
   const {
     name,
     about,
@@ -49,23 +60,20 @@ export const patchAboutUser = (req: ExpandedRequest, res: Response) => {
   )
     .then((updateUser) => {
       if (!updateUser) {
-        throw new Error("Ошибка при обновлении данных о пользователе");
+        throw CustomError.notFoundError();
       }
       res.send(updateUser);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res
-          .status(400)
-          .send({ message: "Ошибка валидации" });
+        next(CustomError.incorrectRequest());
+      } else {
+        next(err);
       }
-      res
-        .status(500)
-        .send({ message: err.message });
     });
 };
 
-export const patchAvatarUser = (req: ExpandedRequest, res: Response) => {
+export const patchAvatarUser = (req: ExpandedRequest, res: Response, next: NextFunction) => {
   const { avatar } = req.body;
   const userId = req.user?._id;
   User.findOneAndUpdate(
@@ -78,18 +86,15 @@ export const patchAvatarUser = (req: ExpandedRequest, res: Response) => {
   )
     .then((updateUser) => {
       if (!updateUser) {
-        throw new Error("Ошибка при обновлении аватара пользователя");
+        throw CustomError.notFoundError();
       }
       res.send(updateUser);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res
-          .status(400)
-          .send({ message: "Ошибка валидации" });
+        next(CustomError.incorrectRequest());
+      } else {
+        next(err);
       }
-      res
-        .status(500)
-        .send({ message: err.message });
     });
 };

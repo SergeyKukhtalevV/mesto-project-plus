@@ -2,6 +2,7 @@ import express, { NextFunction, Response } from "express";
 import mongoose from "mongoose";
 import router from "./routes/index";
 import { ExpandedRequest } from "./controllers/cards";
+import { errorMiddleware } from "./middleware/errorMiddleware";
 
 const { PORT = 3000 } = process.env;
 
@@ -16,7 +17,7 @@ app.use((req: ExpandedRequest, res: Response, next: NextFunction) => {
 
   next();
 });
-app.use(router);
+app.use(router, errorMiddleware);
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
