@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Card from "../models/card";
-import { CustomError } from "../errors/CustomError";
+import CustomError from "../errors/CustomError";
 
 export interface ExpandedRequest extends Request {
   user?: {

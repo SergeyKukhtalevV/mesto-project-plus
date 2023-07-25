@@ -2,10 +2,11 @@ import express, { NextFunction, Response } from "express";
 import mongoose from "mongoose";
 import router from "./routes/index";
 import { ExpandedRequest } from "./controllers/cards";
-import { errorMiddleware } from "./middleware/errorMiddleware";
+import errorMiddleware from "./middleware/errorMiddleware";
 
 const { PORT = 3000 } = process.env;
 
+// eslint-disable-next-line linebreak-style
 const app = express();
 mongoose.connect("mongodb://0.0.0.0:27017/mestodb");
 app.use(express.json());

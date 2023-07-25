@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../models/user";
 import { ExpandedRequest } from "./cards";
-import { CustomError } from "../errors/CustomError";
+import CustomError from "../errors/CustomError";
 
 export const getUsers = (req: Request, res: Response, next: NextFunction) => User.find({})
   .then((users) => res.send(users))
