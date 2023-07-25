@@ -16,16 +16,12 @@ export const createCard = (req: ExpandedRequest, res: Response, next: NextFuncti
   const {
     name,
     link,
-    likes,
-    createdAt,
   } = req.body;
   const userId = req.user?._id;
   Card.create({
     name,
     link,
     owner: userId,
-    likes,
-    createdAt,
   })
     .then((card) => res.send(card))
     .catch((err) => {
