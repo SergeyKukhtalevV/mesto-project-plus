@@ -1,14 +1,11 @@
 import { INCORRECT_REQUEST, NOT_FOUND_ERROR } from "../constans/errors";
 
-export class CustomError extends Error {
+class CustomError extends Error {
   status: number;
 
-  message: string;
-
   constructor(status: number, message: string) {
-    super();
+    super(message);
     this.status = status;
-    this.message = message;
   }
 
   static incorrectRequest() {
@@ -19,3 +16,5 @@ export class CustomError extends Error {
     return new CustomError(NOT_FOUND_ERROR.status, NOT_FOUND_ERROR.message);
   }
 }
+
+export default CustomError;

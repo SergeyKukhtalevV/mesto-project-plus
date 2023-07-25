@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
+import mongoose from "mongoose";
 import Card from "../models/card";
-import { CustomError } from "../errors/CustomError";
+import CustomError from "../errors/CustomError";
 
 export interface ExpandedRequest extends Request {
   user?: {
@@ -16,20 +17,16 @@ export const createCard = (req: ExpandedRequest, res: Response, next: NextFuncti
   const {
     name,
     link,
-    likes,
-    createdAt,
   } = req.body;
   const userId = req.user?._id;
   Card.create({
     name,
     link,
     owner: userId,
-    likes,
-    createdAt,
   })
     .then((card) => res.send(card))
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err instanceof mongoose.Error.ValidationError) {
         next(CustomError.incorrectRequest());
       } else {
         next(err);
@@ -38,7 +35,7 @@ export const createCard = (req: ExpandedRequest, res: Response, next: NextFuncti
 };
 
 export const deleteCard = (req: Request, res: Response, next: NextFunction) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findByIdAndRemove(req.params.cardId).orFail(() => CustomError.notFoundError())
     .then((result) => {
       if (result) {
         res.send({
@@ -47,8 +44,8 @@ export const deleteCard = (req: Request, res: Response, next: NextFunction) => {
       }
     })
     .catch((err) => {
-      if (err.name === "CastError") {
-        next(CustomError.notFoundError());
+      if (err instanceof mongoose.Error.CastError) {
+        next(CustomError.incorrectRequest());
       } else {
         next(err);
       }
@@ -71,7 +68,7 @@ export const putLikeCard = (req: ExpandedRequest, res: Response, next: NextFunct
       });
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err instanceof mongoose.Error.CastError) {
         next(CustomError.incorrectRequest());
       } else {
         next(err);
@@ -96,7 +93,7 @@ export const removedLikeCard = (req: ExpandedRequest, res: Response, next: NextF
       });
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err instanceof mongoose.Error.CastError) {
         next(CustomError.incorrectRequest());
       } else {
         next(err);
