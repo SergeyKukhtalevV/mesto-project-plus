@@ -1,15 +1,22 @@
 import { NextFunction, Request, Response } from "express";
+import mongoose from "mongoose";
 import User from "../models/user";
 import { ExpandedRequest } from "./cards";
 import CustomError from "../errors/CustomError";
-import mongoose from "mongoose";
+
+interface IUserData {
+  name?: string;
+  about?: string;
+  avatar?: string;
+}
 
 export const getUsers = (req: Request, res: Response, next: NextFunction) => User.find({})
   .then((users) => res.send(users))
   .catch(next);
 
 export const getUserById = (req: Request, res: Response, next: NextFunction) => {
-  User.findById(req.params.userId).orFail(() => CustomError.notFoundError())
+  User.findById(req.params.userId)
+    .orFail(() => CustomError.notFoundError())
     .then((users) => res.send(users))
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
@@ -40,20 +47,16 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-export const patchAboutUser = (req: ExpandedRequest, res: Response, next: NextFunction) => {
-  const {
-    name,
-    about,
-    avatar,
-  } = req.body;
+const patchUserInfo = (
+  data: IUserData,
+  req: ExpandedRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const userId = req.user?._id;
   User.findOneAndUpdate(
     { userId },
-    {
-      name,
-      about,
-      avatar,
-    },
+    { data },
     {
       new: true,
       runValidators: true,
@@ -74,28 +77,15 @@ export const patchAboutUser = (req: ExpandedRequest, res: Response, next: NextFu
     });
 };
 
+export const patchAboutUser = (req: ExpandedRequest, res: Response, next: NextFunction) => {
+  patchUserInfo({
+    name: req.body.name,
+    about: req.body.about,
+  }, req, res, next);
+};
+
 export const patchAvatarUser = (req: ExpandedRequest, res: Response, next: NextFunction) => {
-  const { avatar } = req.body;
-  const userId = req.user?._id;
-  User.findOneAndUpdate(
-    { userId },
-    { avatar },
-    {
-      new: true,
-      runValidators: true,
-    },
-  )
-    .then((updateUser) => {
-      if (!updateUser) {
-        throw CustomError.notFoundError();
-      }
-      res.send(updateUser);
-    })
-    .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
-        next(CustomError.incorrectRequest());
-      } else {
-        next(err);
-      }
-    });
+  patchUserInfo({
+    avatar: req.body.avatar,
+  }, req, res, next);
 };

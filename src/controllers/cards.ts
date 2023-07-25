@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
+import mongoose from "mongoose";
 import Card from "../models/card";
 import CustomError from "../errors/CustomError";
-import mongoose from "mongoose";
 
 export interface ExpandedRequest extends Request {
   user?: {
