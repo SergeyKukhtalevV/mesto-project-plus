@@ -8,11 +8,11 @@ export const getUsers = (req: Request, res: Response, next: NextFunction) => Use
   .catch(next);
 
 export const getUserById = (req: Request, res: Response, next: NextFunction) => {
-  User.findById(req.params.userId)
+  User.findById(req.params.userId).orFail(() => CustomError.notFoundError())
     .then((users) => res.send(users))
     .catch((err) => {
       if (err.name === "CastError") {
-        next(CustomError.notFoundError());
+        next(CustomError.incorrectRequest());
       } else {
         next(err);
       }

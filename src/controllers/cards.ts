@@ -34,7 +34,7 @@ export const createCard = (req: ExpandedRequest, res: Response, next: NextFuncti
 };
 
 export const deleteCard = (req: Request, res: Response, next: NextFunction) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findByIdAndRemove(req.params.cardId).orFail(() => CustomError.notFoundError())
     .then((result) => {
       if (result) {
         res.send({
@@ -44,7 +44,7 @@ export const deleteCard = (req: Request, res: Response, next: NextFunction) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        next(CustomError.notFoundError());
+        next(CustomError.incorrectRequest());
       } else {
         next(err);
       }
