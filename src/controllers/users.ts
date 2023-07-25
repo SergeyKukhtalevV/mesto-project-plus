@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import User from "../models/user";
 import { ExpandedRequest } from "./cards";
 import CustomError from "../errors/CustomError";
+import mongoose from "mongoose";
 
 export const getUsers = (req: Request, res: Response, next: NextFunction) => User.find({})
   .then((users) => res.send(users))
@@ -11,7 +12,7 @@ export const getUserById = (req: Request, res: Response, next: NextFunction) => 
   User.findById(req.params.userId).orFail(() => CustomError.notFoundError())
     .then((users) => res.send(users))
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err instanceof mongoose.Error.CastError) {
         next(CustomError.incorrectRequest());
       } else {
         next(err);
@@ -31,7 +32,7 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
   })
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err instanceof mongoose.Error.ValidationError) {
         next(CustomError.incorrectRequest());
       } else {
         next(err);
@@ -65,7 +66,7 @@ export const patchAboutUser = (req: ExpandedRequest, res: Response, next: NextFu
       res.send(updateUser);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err instanceof mongoose.Error.ValidationError) {
         next(CustomError.incorrectRequest());
       } else {
         next(err);
@@ -91,7 +92,7 @@ export const patchAvatarUser = (req: ExpandedRequest, res: Response, next: NextF
       res.send(updateUser);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err instanceof mongoose.Error.ValidationError) {
         next(CustomError.incorrectRequest());
       } else {
         next(err);

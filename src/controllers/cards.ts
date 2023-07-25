@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Card from "../models/card";
 import CustomError from "../errors/CustomError";
+import mongoose from "mongoose";
 
 export interface ExpandedRequest extends Request {
   user?: {
@@ -25,7 +26,7 @@ export const createCard = (req: ExpandedRequest, res: Response, next: NextFuncti
   })
     .then((card) => res.send(card))
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err instanceof mongoose.Error.ValidationError) {
         next(CustomError.incorrectRequest());
       } else {
         next(err);
@@ -43,7 +44,7 @@ export const deleteCard = (req: Request, res: Response, next: NextFunction) => {
       }
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err instanceof mongoose.Error.CastError) {
         next(CustomError.incorrectRequest());
       } else {
         next(err);
@@ -67,7 +68,7 @@ export const putLikeCard = (req: ExpandedRequest, res: Response, next: NextFunct
       });
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err instanceof mongoose.Error.CastError) {
         next(CustomError.incorrectRequest());
       } else {
         next(err);
@@ -92,7 +93,7 @@ export const removedLikeCard = (req: ExpandedRequest, res: Response, next: NextF
       });
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err instanceof mongoose.Error.CastError) {
         next(CustomError.incorrectRequest());
       } else {
         next(err);
