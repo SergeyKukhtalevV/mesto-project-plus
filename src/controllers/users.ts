@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import User from "../models/user";
@@ -93,4 +94,22 @@ export const patchAvatarUser = (req: ExpandedRequest, res: Response, next: NextF
   patchUserInfo({
     avatar: req.body.avatar,
   }, req, res, next);
+};
+
+export const login = (req: Request, res: Response, next: NextFunction) => {
+  const {
+    email,
+    password,
+  } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      // создадим токен
+      const token = jwt.sign({ _id: user._id }, "some-secret-key", { expiresIn: "7d" });
+
+      // вернём токен
+      res.cookie("token", token, { httpOnly: true });
+      res.send({ message: "Вы успешно авторизовались!" });
+    })
+    .catch(next);
 };

@@ -10,3 +10,7 @@ export const SERVER_ERROR = {
   status: 500,
   message: "Ошибка сервера",
 };
+export const BAD_AUTHORISATION = {
+  status: 401,
+  message: "Ошибка. Необходима авторизация",
+};

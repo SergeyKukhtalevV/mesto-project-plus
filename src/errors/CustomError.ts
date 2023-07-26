@@ -1,4 +1,4 @@
-import { INCORRECT_REQUEST, NOT_FOUND_ERROR } from "../constans/errors";
+import { BAD_AUTHORISATION, INCORRECT_REQUEST, NOT_FOUND_ERROR } from "../constans/errors";
 
 class CustomError extends Error {
   status: number;
@@ -14,6 +14,10 @@ class CustomError extends Error {
 
   static notFoundError() {
     return new CustomError(NOT_FOUND_ERROR.status, NOT_FOUND_ERROR.message);
+  }
+
+  static notAuthorization() {
+    return new CustomError(BAD_AUTHORISATION.status, BAD_AUTHORISATION.message);
   }
 }
 
