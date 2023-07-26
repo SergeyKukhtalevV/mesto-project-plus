@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import User from "../models/user";
@@ -31,12 +32,16 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
     name,
     about,
     avatar,
+    email,
   } = req.body;
-  User.create({
-    name,
-    about,
-    avatar,
-  })
+  bcrypt.hash(req.body.password, 10)
+    .then((hash) => User.create({
+      name,
+      about,
+      avatar,
+      email,
+      password: hash,
+    }))
     .then((user) => res.send(user))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
