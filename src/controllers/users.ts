@@ -23,6 +23,9 @@ export const getUserById = (req: ExpandedRequest, res: Response, next: NextFunct
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
         next(CustomError.incorrectRequest());
+      }
+      if (err.code === 11000) {
+        next(CustomError.conflict());
       } else {
         next(err);
       }

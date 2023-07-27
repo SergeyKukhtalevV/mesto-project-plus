@@ -1,5 +1,5 @@
 import {
-  BAD_AUTHORISATION,
+  BAD_AUTHORISATION, CONFLICT,
   FORBIDDEN,
   INCORRECT_REQUEST,
   NOT_FOUND_ERROR,
@@ -27,6 +27,10 @@ class CustomError extends Error {
 
   static forbidden() {
     return new CustomError(FORBIDDEN.status, FORBIDDEN.message);
+  }
+
+  static conflict() {
+    return new CustomError(CONFLICT.status, CONFLICT.message);
   }
 }
 

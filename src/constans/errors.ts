@@ -18,3 +18,7 @@ export const FORBIDDEN = {
   status: 403,
   message: "Ошибка. Доступ запрещен",
 };
+export const CONFLICT = {
+  status: 409,
+  message: "Ошибка. Конфликт запроса создания пользователя",
+};
