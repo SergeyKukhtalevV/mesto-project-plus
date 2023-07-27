@@ -3,7 +3,7 @@ import { NextFunction } from "express";
 import { ExpandedRequest } from "../controllers/cards";
 import CustomError from "../errors/CustomError";
 
-export default (req: ExpandedRequest, res: Response, next: NextFunction) => {
+const auth = (req: ExpandedRequest, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
@@ -24,3 +24,4 @@ export default (req: ExpandedRequest, res: Response, next: NextFunction) => {
   };
   next();
 };
+export default auth;
