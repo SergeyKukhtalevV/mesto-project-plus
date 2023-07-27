@@ -4,13 +4,13 @@ import { ExpandedRequest } from "../controllers/cards";
 import CustomError from "../errors/CustomError";
 
 const auth = (req: ExpandedRequest, res: Response, next: NextFunction) => {
-  const { authorization } = req.headers;
+  const { cookie } = req.headers;
 
-  if (!authorization) {
+  if (!cookie) {
     next(CustomError.notAuthorization());
   }
 
-  const token = authorization?.replace("token=", "");
+  const token = cookie?.replace("token=", "");
   let payload;
 
   try {

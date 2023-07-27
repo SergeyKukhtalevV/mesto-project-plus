@@ -14,3 +14,7 @@ export const BAD_AUTHORISATION = {
   status: 401,
   message: "Ошибка. Необходима авторизация",
 };
+export const FORBIDDEN = {
+  status: 403,
+  message: "Ошибка. Доступ запрещен",
+};

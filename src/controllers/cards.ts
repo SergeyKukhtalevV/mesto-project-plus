@@ -34,12 +34,21 @@ export const createCard = (req: ExpandedRequest, res: Response, next: NextFuncti
     });
 };
 
-export const deleteCard = (req: Request, res: Response, next: NextFunction) => {
-  Card.findByIdAndRemove(req.params.cardId).orFail(() => CustomError.notFoundError())
-    .then((result) => {
-      if (result) {
+export const deleteCard = (req: ExpandedRequest, res: Response, next: NextFunction) => {
+  const userId = req.user?._id;
+  Card.findById(req.params.cardId)
+    .orFail(() => CustomError.notFoundError())
+    .then((card) => {
+      if (card.owner.toString() !== userId) {
+        next(CustomError.forbidden());
+      }
+      return Card.findByIdAndRemove(req.params.cardId);
+    })
+    .then((card) => {
+      if (card) {
         res.send({
           message: "Карточка удалена",
+          data: card,
         });
       }
     })

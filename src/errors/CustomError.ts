@@ -1,4 +1,9 @@
-import { BAD_AUTHORISATION, INCORRECT_REQUEST, NOT_FOUND_ERROR } from "../constans/errors";
+import {
+  BAD_AUTHORISATION,
+  FORBIDDEN,
+  INCORRECT_REQUEST,
+  NOT_FOUND_ERROR,
+} from "../constans/errors";
 
 class CustomError extends Error {
   status: number;
@@ -18,6 +23,10 @@ class CustomError extends Error {
 
   static notAuthorization() {
     return new CustomError(BAD_AUTHORISATION.status, BAD_AUTHORISATION.message);
+  }
+
+  static forbidden() {
+    return new CustomError(FORBIDDEN.status, FORBIDDEN.message);
   }
 }
 
