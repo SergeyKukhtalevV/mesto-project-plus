@@ -10,3 +10,15 @@ export const SERVER_ERROR = {
   status: 500,
   message: "Ошибка сервера",
 };
+export const BAD_AUTHORISATION = {
+  status: 401,
+  message: "Ошибка. Необходима авторизация",
+};
+export const FORBIDDEN = {
+  status: 403,
+  message: "Ошибка. Доступ запрещен",
+};
+export const CONFLICT = {
+  status: 409,
+  message: "Ошибка. Конфликт запроса создания пользователя",
+};
