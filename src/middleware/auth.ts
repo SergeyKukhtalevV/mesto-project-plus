@@ -10,7 +10,7 @@ export default (req: ExpandedRequest, res: Response, next: NextFunction) => {
     next(CustomError.notAuthorization());
   }
 
-  const token = authorization?.replace("=", "");
+  const token = authorization?.replace("token=", "");
   let payload;
 
   try {

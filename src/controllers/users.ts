@@ -16,8 +16,8 @@ export const getUsers = (req: Request, res: Response, next: NextFunction) => Use
   .then((users) => res.send(users))
   .catch(next);
 
-export const getUserById = (req: Request, res: Response, next: NextFunction) => {
-  User.findById(req.params.userId)
+export const getUserById = (req: ExpandedRequest, res: Response, next: NextFunction) => {
+  User.findById(req.params.userId || req.user?._id)
     .orFail(() => CustomError.notFoundError())
     .then((users) => res.send(users))
     .catch((err) => {
