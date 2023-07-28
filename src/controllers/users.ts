@@ -43,12 +43,17 @@ export const createUser = (req: Request, res: Response, next: NextFunction) => {
       email,
       password: hash,
     }))
-    .then((user) => res.send(user))
+    .then((user) => res.send({
+      email: user.email,
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+      _id: user._id,
+    }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(CustomError.incorrectRequest());
-      }
-      if (err.code === 11000) {
+      } else if (err.code === 11000) {
         next(CustomError.conflict());
       } else {
         next(err);
@@ -74,8 +79,9 @@ const patchUserInfo = (
     .then((updateUser) => {
       if (!updateUser) {
         throw CustomError.notFoundError();
+      } else {
+        res.send(updateUser);
       }
-      res.send(updateUser);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {

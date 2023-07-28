@@ -24,7 +24,8 @@ export const createCard = (req: ExpandedRequest, res: Response, next: NextFuncti
     link,
     owner: userId,
   })
-    .then((card) => res.send(card))
+    .then((card) => res.status(201)
+      .send(card))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(CustomError.incorrectRequest());
@@ -40,17 +41,15 @@ export const deleteCard = (req: ExpandedRequest, res: Response, next: NextFuncti
     .orFail(() => CustomError.notFoundError())
     .then((card) => {
       if (card.owner.toString() !== userId) {
-        next(CustomError.forbidden());
+        throw CustomError.forbidden();
       }
-      return Card.findByIdAndRemove(req.params.cardId);
+      return card.deleteOne();
     })
     .then((card) => {
-      if (card) {
-        res.send({
-          message: "Карточка удалена",
-          data: card,
-        });
-      }
+      res.send({
+        message: "Карточка удалена",
+        data: card,
+      });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
