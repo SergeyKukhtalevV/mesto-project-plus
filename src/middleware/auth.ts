@@ -3,11 +3,12 @@ import { NextFunction } from "express";
 import { ExpandedRequest } from "../controllers/cards";
 import CustomError from "../errors/CustomError";
 
+// eslint-disable-next-line consistent-return
 const auth = (req: ExpandedRequest, res: Response, next: NextFunction) => {
   const { cookie } = req.headers;
 
   if (!cookie) {
-    next(CustomError.notAuthorization());
+    return next(CustomError.notAuthorization());
   }
 
   const token = cookie?.replace("token=", "");

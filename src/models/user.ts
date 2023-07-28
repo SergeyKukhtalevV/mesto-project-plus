@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import validator from "validator";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import CustomError from "../errors/CustomError";
+import { urlPattern } from "../constans/patterns";
 
 interface IUser {
   name: string;
@@ -34,7 +35,7 @@ const userSchema = new mongoose.Schema<IUser, UserModel>(
     avatar: {
       type: String,
       default: "https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png",
-      match: /^https?:\/\/.+/,
+      match: urlPattern,
     },
     email: {
       type: String,
@@ -47,7 +48,6 @@ const userSchema = new mongoose.Schema<IUser, UserModel>(
     password: {
       type: String,
       required: true,
-      minlength: 8,
       select: false,
     },
   },
