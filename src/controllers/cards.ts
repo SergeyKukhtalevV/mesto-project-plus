@@ -60,20 +60,27 @@ export const deleteCard = (req: ExpandedRequest, res: Response, next: NextFuncti
     });
 };
 
-export const putLikeCard = (req: ExpandedRequest, res: Response, next: NextFunction) => {
+export const toggleLikeCard = (req: ExpandedRequest, res: Response, next: NextFunction) => {
   const userId = req.user?._id;
   Card.findByIdAndUpdate(
     req.params.cardId,
-    { $addToSet: { likes: userId } },
+    // @ts-ignore
+    req.method === "DELETE" ? { $pull: { likes: userId } } : { $addToSet: { likes: userId } },
     { new: true },
   )
     .then((result) => {
       if (!result) {
         throw CustomError.notFoundError();
       }
-      res.send({
-        message: "Добавлен лайк карточке",
-      });
+      if (req.method === "DELETE") {
+        res.send({
+          message: "Удален лайк карточки",
+        });
+      } else {
+        res.send({
+          message: "Добавлен лайк карточке",
+        });
+      }
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
@@ -84,27 +91,10 @@ export const putLikeCard = (req: ExpandedRequest, res: Response, next: NextFunct
     });
 };
 
+export const putLikeCard = (req: ExpandedRequest, res: Response, next: NextFunction) => {
+  toggleLikeCard(req, res, next);
+};
+
 export const removedLikeCard = (req: ExpandedRequest, res: Response, next: NextFunction) => {
-  const userId = req.user?._id;
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    // @ts-ignore
-    { $pull: { likes: userId } },
-    { new: true },
-  )
-    .then((result) => {
-      if (!result) {
-        throw CustomError.notFoundError();
-      }
-      res.send({
-        message: "Удален лайк карточки",
-      });
-    })
-    .catch((err) => {
-      if (err instanceof mongoose.Error.CastError) {
-        next(CustomError.incorrectRequest());
-      } else {
-        next(err);
-      }
-    });
+  toggleLikeCard(req, res, next);
 };
