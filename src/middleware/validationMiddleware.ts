@@ -5,7 +5,7 @@ export const getUserByIdValidation = celebrate({
   params: Joi.object()
     .keys({
       userId: Joi.string()
-        .alphanum()
+        .hex()
         .length(24)
         .required(),
     }),
@@ -36,10 +36,12 @@ export const patchAboutUserValidation = celebrate({
     .keys({
       name: Joi.string()
         .min(2)
-        .max(30),
+        .max(30)
+        .required(),
       about: Joi.string()
         .min(2)
-        .max(200),
+        .max(200)
+        .required(),
     }),
 });
 
@@ -47,7 +49,8 @@ export const patchAvatarUserValidation = celebrate({
   body: Joi.object()
     .keys({
       avatar: Joi.string()
-        .pattern(urlPattern),
+        .pattern(urlPattern)
+        .required(),
     }),
 });
 
@@ -80,7 +83,7 @@ export const cardValidation = celebrate({
   params: Joi.object()
     .keys({
       cardId: Joi.string()
-        .alphanum()
+        .hex()
         .length(24)
         .required(),
     }),

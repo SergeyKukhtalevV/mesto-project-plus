@@ -7,7 +7,7 @@ const auth = (req: ExpandedRequest, res: Response, next: NextFunction) => {
   const { cookie } = req.headers;
 
   if (!cookie) {
-    next(CustomError.notAuthorization());
+    return CustomError.notAuthorization();
   }
 
   const token = cookie?.replace("token=", "");
