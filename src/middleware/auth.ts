@@ -17,7 +17,7 @@ const auth = (req: ExpandedRequest, res: Response, next: NextFunction) => {
   try {
     payload = jwt.verify(token!, "some-secret-key") as JwtPayload;
   } catch (err) {
-    next(CustomError.notAuthorization());
+    return next(CustomError.notAuthorization());
   }
 
   req.user = {
